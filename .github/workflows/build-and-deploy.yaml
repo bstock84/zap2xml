@@ -5,7 +5,7 @@ on:
 
 env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-  DOCKERHUB_PAT: ${{ secrets.DOCKER_PAT }}
+  DOCKERHUB_KEY: ${{ secrets.DOCKER_PAT }}
 
 jobs:
   build-and-deploy:
@@ -23,7 +23,7 @@ jobs:
         uses: docker/login-action@v1
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
-          password: ${{ env.DOCKERHUB_PAT }}
+          password: ${{ env.DOCKERHUB_KEY }}
 
       - name: Build Docker image
         run: docker build -t bstock84/gracenote:${{ steps.date.outputs.TAG }} .
