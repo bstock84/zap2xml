@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
 
 env:
-  DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-  DOCKERHUB_KEY: ${{ secrets.DOCKER_PAT }}
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  DOCKERHUB_KEY: ${{ secrets.DOCKERHUB_PAT }}
 
 jobs:
   build-and-deploy:
