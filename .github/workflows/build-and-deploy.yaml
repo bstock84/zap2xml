@@ -19,19 +19,13 @@ jobs:
         id: date
         run: echo "TAG=$(date +'%Y%m%d-%H%M')" >> $GITHUB_OUTPUT
 
-      - name: Create Docker config
-        run: |
-          mkdir -p /tmp/.docker
-          echo '{"auths":{"https://index.docker.io/v1/":{"username":"${{ env.DOCKERHUB_USERNAME }}","password":"${{ env.DOCKERHUB_KEY }}"}}}' > /tmp/.docker/config.json
-
       - name: Build and push Docker image with Kaniko
-        uses: docker://gcr.io/kaniko-project/executor:latest
+        uses: aevea/action-kaniko@master
         with:
-          args: >-
-            --context /github/workspace
-            --dockerfile /github/workspace/Dockerfile
-            --destination bstock84/gracenote:${{ steps.date.outputs.TAG }}
-            --cache=true
-            --cache-repo=bstock84/gracenote-cache
-        env:
-          DOCKER_CONFIG: /tmp/.docker
+          image: bstock84/gracenote
+          tag: ${{ steps.date.outputs.TAG }}
+          registry: docker.io
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_KEY }}
+          cache: true
+          cache_repo: bstock84/gracenote-cache
