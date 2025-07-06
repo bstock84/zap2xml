@@ -15,15 +15,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Download and install img
+        run: |
+          curl -fsSL -o img https://github.com/genuinetools/img/releases/download/v0.5.11/img-linux-amd64
+          chmod +x img
+          sudo mv img /usr/local/bin/
+
       - name: Generate date tag
         id: date
         run: echo "TAG=$(date +'%Y%m%d-%H%M')" >> $GITHUB_OUTPUT
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: bstock84/gracenote:${{ steps.date.outputs.TAG }}
-          cache-from: type=registry,ref=bstock84/gracenote-cache:buildcache
-          cache-to: type=registry,ref=bstock84/gracenote-cache:buildcache,mode=max
+      - name: Login to Docker Hub
+        run: echo "${{ env.DOCKERHUB_KEY }}" | img login --username "${{ env.DOCKERHUB_USERNAME }}" --password-stdin docker.io
+
+      - name: Build and push with img
+        run: |
+          img build -t bstock84/gracenote:${{ steps.date.outputs.TAG }} .
+          img push bstock84/gracenote:${{ steps.date.outputs.TAG }}
