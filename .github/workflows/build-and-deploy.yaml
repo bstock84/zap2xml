@@ -19,13 +19,10 @@ jobs:
         id: date
         run: echo "TAG=$(date +'%Y%m%d-%H%M')" >> $GITHUB_OUTPUT
 
-      - name: Build and push Docker image with Kaniko
-        uses: aevea/action-kaniko@master
-        with:
-          image: bstock84/gracenote
-          tag: ${{ steps.date.outputs.TAG }}
-          registry: docker.io
-          username: ${{ env.DOCKERHUB_USERNAME }}
-          password: ${{ env.DOCKERHUB_KEY }}
-          cache: true
-          cache_repo: bstock84/gracenote-cache
+      - name: Login to Docker Hub
+        run: echo "${{ env.DOCKERHUB_KEY }}" | buildah login --username "${{ env.DOCKERHUB_USERNAME }}" --password-stdin docker.io
+
+      - name: Build and push with Buildah
+        run: |
+          buildah build -t bstock84/gracenote:${{ steps.date.outputs.TAG }} .
+          buildah push bstock84/gracenote:${{ steps.date.outputs.TAG }} docker://docker.io/bstock84/gracenote:${{ steps.date.outputs.TAG }}
