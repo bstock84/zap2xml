@@ -15,8 +15,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Download and install img
+      - name: Install required packages and img
         run: |
+          sudo apt-get update
+          sudo apt-get install -y uidmap
           curl -fsSL -o img https://github.com/genuinetools/img/releases/download/v0.5.11/img-linux-amd64
           chmod +x img
           sudo mv img /usr/local/bin/
