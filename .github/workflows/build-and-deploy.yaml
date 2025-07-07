@@ -19,18 +19,16 @@ jobs:
         id: date
         run: echo "TAG=$(date +'%Y%m%d-%H%M')" >> $GITHUB_OUTPUT
 
+      - name: DockerHub Login for Kaniko
+        run: |
+          mkdir -p /kaniko/.docker
+          echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"username\":\"${DOCKERHUB_USERNAME}\",\"password\":\"${DOCKERHUB_KEY}\"}}}" > /kaniko/.docker/config.json
+
       - name: Build and Push with Kaniko
-        uses: addnab/docker-run-action@v3
-        with:
-          image: gcr.io/kaniko-project/executor:v1.20.0
-          options: >
-            --privileged
-            -v ${{ github.workspace }}:/workspace
-            -v /kaniko/.docker:/kaniko/.docker
-          run: |
-            /kaniko/executor \
-              --context=/workspace \
-              --dockerfile=/workspace/Dockerfile \
-              --destination=bstock84/gracenote:${{ steps.date.outputs.TAG }} \
-              --destination=bstock84/gracenote:latest \
-              --skip-tls-verify
+        run: |
+          /kaniko/executor \
+            --context $(pwd) \
+            --dockerfile $(pwd)/Dockerfile \
+            --destination bstock84/gracenote:${{ steps.date.outputs.TAG }} \
+            --destination bstock84/gracenote:latest \
+            --skip-tls-verify
