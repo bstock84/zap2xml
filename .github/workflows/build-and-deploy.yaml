@@ -30,7 +30,13 @@ jobs:
       - name: Login to Docker Hub
         run: echo "${{ env.DOCKERHUB_KEY }}" | img login --username "${{ env.DOCKERHUB_USERNAME }}" --password-stdin docker.io
 
-      - name: Build and push with img
+      - name: Build and push image with Kaniko
         run: |
-          img build -t bstock84/gracenote:${{ steps.date.outputs.TAG }} .
-          img push bstock84/gracenote:${{ steps.date.outputs.TAG }}
+          wget https://github.com/GoogleContainerTools/kaniko/releases/download/v1.20.0/executor -O /kaniko-executor
+          chmod +x /kaniko-executor
+          ./kaniko-executor --context . \
+                            --dockerfile Dockerfile \
+                            --destination bstock84/gracenote:${{ steps.date.outputs.TAG }} \
+                            --destination bstock84/gracenote:latest \
+                            --skip-tls-verify
+
