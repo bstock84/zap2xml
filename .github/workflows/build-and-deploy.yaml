@@ -32,11 +32,10 @@ jobs:
 
       - name: Build and push image with Kaniko
         run: |
-          curl -L https://github.com/GoogleContainerTools/kaniko/releases/download/v1.20.0/executor -o kaniko-executor
+          curl -L https://github.com/GoogleContainerTools/kaniko/releases/download/v1.20.0/executor-linux-amd64 -o kaniko-executor
           chmod +x kaniko-executor
           ./kaniko-executor --context . \
                             --dockerfile Dockerfile \
                             --destination bstock84/gracenote:${{ steps.date.outputs.TAG }} \
                             --destination bstock84/gracenote:latest \
                             --skip-tls-verify
-
