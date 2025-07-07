@@ -15,20 +15,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install required packages and img
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y uidmap
-          curl -fsSL -o img https://github.com/genuinetools/img/releases/download/v0.5.11/img-linux-amd64
-          chmod +x img
-          sudo mv img /usr/local/bin/
-
       - name: Generate date tag
         id: date
         run: echo "TAG=$(date +'%Y%m%d-%H%M')" >> $GITHUB_OUTPUT
-
-      - name: Login to Docker Hub
-        run: echo "${{ env.DOCKERHUB_KEY }}" | img login --username "${{ env.DOCKERHUB_USERNAME }}" --password-stdin docker.io
 
       - name: Build and Push with Kaniko
         uses: addnab/docker-run-action@v3
