@@ -24,10 +24,10 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t bstock84/gracenote:${{ steps.date.outputs.TAG }} .
-          docker tag bstock84/gracenote:${{ steps.date.outputs.TAG }} bstock84/gracenote:latest
+          docker build -t bstock/gracenote:${{ steps.date.outputs.TAG }} .
+          docker tag bstock/gracenote:${{ steps.date.outputs.TAG }} bstock/gracenote:latest
 
       - name: Push Docker image
         run: |
-          docker push bstock84/gracenote:${{ steps.date.outputs.TAG }}
-          docker push bstock84/gracenote:latest
+          docker push bstock/gracenote:${{ steps.date.outputs.TAG }}
+          docker push bstock/gracenote:latest
